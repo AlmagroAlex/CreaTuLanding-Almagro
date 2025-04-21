@@ -1,18 +1,23 @@
-import React from "react";
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { getProducts, getProductsByCategory } from '../data/products'
+import ItemList from './ItemList'
 
-const ItemListContainer = ({ greeting }) => {
-  const products = ["Producto 1", "Producto 2", "Producto 3"];
+const ItemListContainer = () => {
+  const [items, setItems] = useState([])
+  const { categoryId } = useParams()
+
+  useEffect(() => {
+    const fetchData = categoryId ? getProductsByCategory(categoryId) : getProducts()
+    fetchData.then(setItems)
+  }, [categoryId])
 
   return (
     <div>
-      <h2>{greeting}</h2>
-      <ul style={{ textAlign: "center" }}>
-        {products.map((product, index) => (
-          <li key={index}>{product}</li>
-        ))}
-      </ul>
+      <h1>{categoryId ? `Categoría: ${categoryId}` : 'Todos los productos'}</h1>
+      <ItemList items={items} />
     </div>
-  );
-};
+  )
+}
 
-export default ItemListContainer;
+export default ItemListContainer
